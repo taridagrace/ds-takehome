@@ -21,7 +21,8 @@ rfm_table AS (
 )
 
 SELECT * FROM rfm_table;
-  
+
+-- ==============================
 -- 1B. Membuat 6 segmen pelanggan
 -- ==============================
 WITH rfm_base AS (
@@ -52,8 +53,9 @@ SELECT *,
 FROM rfm_table
 ORDER BY segment;
 
+-- ==========================================
 -- 2. Deteksi Anomali berdasarkan decoy_noise
--- ==============================
+-- ==========================================
 SELECT
   order_id,
   customer_id,
@@ -67,3 +69,54 @@ WHERE
   ABS(payment_value - decoy_noise) > 150
 ORDER BY
   gap DESC;
+  
+-- ====================================
+-- 3. Repeat-purchase bulanan + EXPLAIN
+-- ====================================
+
+-- 3.1 Menambahkan kolom bulan (format YYYY-MM)
+WITH orders_with_month AS (
+  SELECT
+    customer_id,
+    DATE_FORMAT(order_date, '%Y-%m') AS order_month,
+    COUNT(order_id) AS order_count
+  FROM
+    e_commerce_transactions
+  GROUP BY
+    customer_id, order_month
+),
+
+-- 3.2 Mengambil yang belanja lebih dari 1x di bulan yang sama
+repeat_purchase AS (
+  SELECT *
+  FROM orders_with_month
+  WHERE order_count > 1
+)
+
+-- 3.3 Menghitung jumlah repeat-purchase per bulan
+SELECT
+  order_month,
+  COUNT(DISTINCT customer_id) AS repeat_customers
+FROM
+  repeat_purchase
+GROUP BY
+  order_month
+ORDER BY
+  order_month;
+
+-- Melihat rencana eksekusi query (EXPLAIN)
+EXPLAIN
+SELECT
+  order_month,
+  COUNT(DISTINCT customer_id)
+FROM
+  (
+    SELECT
+      customer_id,
+      DATE_FORMAT(order_date, '%Y-%m') AS order_month,
+      COUNT(order_id) AS order_count
+    FROM e_commerce_transactions
+    GROUP BY customer_id, DATE_FORMAT(order_date, '%Y-%m')
+    HAVING order_count > 1
+  ) AS subquery
+GROUP BY order_month;
