@@ -32,3 +32,9 @@ p <- ggplot(validasi, aes(x = prediksi, y = aktual)) +
 print(p)
 
 ggsave("calibration_curve.png")
+
+
+# 3. Cut-off
+
+cutoff <- quantile(validasi$prediksi, probs = 0.95)
+print(paste("Cut-off score (≤5% risiko default):", cutoff))

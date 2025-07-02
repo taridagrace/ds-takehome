@@ -1,0 +1,2 @@
+Cut-off ditentukan berdasarkan hasil prediksi probabilitas gagal bayar dari model Gradient Boosting. Dengan mengambil batas atas 5% tertinggi, diperoleh nilai cut-off sebesar 0.02308. Artinya, hanya nasabah dengan kemungkinan gagal bayar lebih kecil dari 2.3% yang dianggap paling aman. Pendekatan ini dilakukan agar tingkat risiko default tetap terjaga di bawah 5%. Hasil ini menunjukkan bahwa model dapat digunakan untuk membantu proses seleksi kredit secara lebih hati-hati dan terukur.
+
