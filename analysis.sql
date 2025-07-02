@@ -51,3 +51,19 @@ SELECT *,
   END AS segment
 FROM rfm_table
 ORDER BY segment;
+
+-- 2. Deteksi Anomali berdasarkan decoy_noise
+-- ==============================
+SELECT
+  order_id,
+  customer_id,
+  payment_value,
+  decoy_flag,
+  decoy_noise,
+  ABS(payment_value - decoy_noise) AS gap
+FROM
+  e_commerce_transactions
+WHERE
+  ABS(payment_value - decoy_noise) > 150
+ORDER BY
+  gap DESC;
