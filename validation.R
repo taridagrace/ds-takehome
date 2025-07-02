@@ -14,6 +14,12 @@ library(ResourceSelection)
 hl <- hoslem.test(x = validasi$aktual, y = validasi$prediksi, g = 10)
 print(hl)
 
+# Hasil HL Test menunjukkan p-value sangat kecil (< 0.05),
+# artinya model tidak fit sempurna terhadap data.
+# Namun, hal ini biasa terjadi pada data besar.
+# Dengan validasi tambahan seperti calibration curve & cut-off,
+# model tetap bisa digunakan dengan pengambilan keputusan yang terkontrol.
+
 hl$p.value        
 hl$statistic     
 hl$expected      
